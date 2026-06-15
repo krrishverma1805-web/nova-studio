@@ -1,0 +1,38 @@
+name: Nova Studio CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Generate Prisma Client
+      run: npx prisma generate
+
+    - name: Run Linter
+      run: npm run lint
+
+    - name: Build Next.js Application
+      run: npm run build
+      env:
+        DATABASE_URL: "postgresql://test:test@localhost:5432/test"
+        MONGODB_URI: "mongodb://localhost:27017/test"
+        NEXTAUTH_SECRET: "ci-nextauth-secret-needs-to-be-thirty-two-characters-long"
+        NEXTAUTH_URL: "http://localhost:3000"
