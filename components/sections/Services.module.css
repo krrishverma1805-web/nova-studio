@@ -1,0 +1,15 @@
+.servicesSection {
+  padding: 6rem 1rem;
+  position: relative;
+}
+
+.servicesSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.5), transparent);
+}
