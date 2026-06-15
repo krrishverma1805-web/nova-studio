@@ -4,9 +4,9 @@ import prisma from '@/lib/prisma';
 import { z } from 'zod';
 
 const projectSchema = z.object({
-  title: z.string().min(2, 'Title must be at least 2 characters'),
-  category: z.string().min(2, 'Category must be at least 2 characters'),
-  imageUrl: z.string().url('Please enter a valid image URL'),
+  title: z.string().min(1).max(150),
+  category: z.string().min(1).max(50),
+  imageUrl: z.string().url().max(500),
 });
 
 export async function GET(request: NextRequest) {

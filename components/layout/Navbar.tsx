@@ -19,6 +19,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { motion } from 'framer-motion';
+import { trackEvent } from '@/lib/analytics';
 
 const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -44,6 +45,11 @@ const Navbar = () => {
     setDrawerOpen(false);
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleNavCtaClick = () => {
+    trackEvent('cta_click', 'start_a_project_navbar');
+    handleNavClick('#contact');
   };
 
   return (
@@ -117,7 +123,7 @@ const Navbar = () => {
                   ))}
                   <ListItem disablePadding sx={{ mt: 2, px: 2 }}>
                     <Box
-                      onClick={() => handleNavClick('#contact')}
+                      onClick={handleNavCtaClick}
                       sx={{
                         width: '100%',
                         py: 1.25,
@@ -168,7 +174,7 @@ const Navbar = () => {
                 <Box
                   id="nav-cta"
                   component="button"
-                  onClick={() => handleNavClick('#contact')}
+                  onClick={handleNavCtaClick}
                   sx={{
                     background: '#F97316',
                     border: 'none',

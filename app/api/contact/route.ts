@@ -1,18 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import prisma from '@/lib/prisma';
-import connectMongoDB from '@/lib/mongodb';
+import connectMongo from '@/lib/mongodb';
 import ContactLog from '@/models/ContactLog';
 import { rateLimit } from '@/lib/rateLimit';
 
 const contactSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
+  name: z.string().min(2).max(100),
+  email: z.string().email().max(254),
+  message: z.string().min(10).max(2000),
 });
 
 export async function POST(request: NextRequest) {
   try {
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > 10240) {
+      return NextResponse.json({ error: 'Request too large' }, { status: 413 });
+    }
+
     // 1. Rate Limiting Check
     const forwarded = request.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0].trim() : '127.0.0.1';
@@ -24,13 +29,10 @@ export async function POST(request: NextRequest) {
 
     if (!limitResult.success) {
       return NextResponse.json(
-        { error: 'Too many requests. Please try again in 15 minutes.' },
+        { error: 'Too many requests. Please wait before submitting again.' },
         {
           status: 429,
-          headers: {
-            'X-RateLimit-Limit': '5',
-            'X-RateLimit-Remaining': '0',
-          },
+          headers: { 'Retry-After': '900' }, // 15 minutes in seconds
         }
       );
     }
@@ -45,31 +47,19 @@ export async function POST(request: NextRequest) {
 
     const { name, email, message } = result.data;
 
-    // 3. Save to PostgreSQL
-    const contact = await prisma.contact.create({
-      data: { name, email, message },
-    });
+    // Save to PostgreSQL first — this is critical
+    const contact = await prisma.contact.create({ data: { name, email, message } });
 
-    // 4. Log to MongoDB
+    // Log to MongoDB — non-critical, fail silently
+    const userAgent = request.headers.get('user-agent') || 'Unknown';
     try {
-      await connectMongoDB();
-      const userAgent = request.headers.get('user-agent') || 'Unknown';
-      await ContactLog.create({
-        name,
-        email,
-        submittedAt: new Date(),
-        ip,
-        userAgent,
-      });
-    } catch (mongoError) {
-      // Log error but do not block the request since Postgres save was successful
-      console.error('Failed to log contact to MongoDB:', mongoError);
+      await connectMongo();
+      await ContactLog.create({ name, email, submittedAt: new Date(), ip, userAgent });
+    } catch (err) {
+      console.error('ContactLog write failed:', err);
     }
 
-    const response = NextResponse.json(contact, { status: 201 });
-    response.headers.set('X-RateLimit-Limit', '5');
-    response.headers.set('X-RateLimit-Remaining', limitResult.remaining.toString());
-    return response;
+    return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
     console.error('Failed to submit contact:', error);
     return NextResponse.json({ error: 'Failed to submit contact' }, { status: 500 });

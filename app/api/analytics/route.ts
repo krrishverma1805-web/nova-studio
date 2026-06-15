@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import connectMongoDB from '@/lib/mongodb';
+import connectMongo from '@/lib/mongodb';
 import AnalyticsEvent from '@/models/AnalyticsEvent';
 
 const analyticsSchema = z.object({
@@ -12,6 +12,11 @@ const analyticsSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > 10240) {
+      return NextResponse.json({ error: 'Request too large' }, { status: 413 });
+    }
+
     const body = await request.json();
     const result = analyticsSchema.safeParse(body);
 
@@ -21,16 +26,20 @@ export async function POST(request: NextRequest) {
 
     const { eventType, page, element, sessionId } = result.data;
 
-    await connectMongoDB();
-    const event = await AnalyticsEvent.create({
-      eventType,
-      page,
-      element,
-      sessionId,
-      timestamp: new Date(),
-    });
-
-    return NextResponse.json(event, { status: 201 });
+    try {
+      await connectMongo();
+      await AnalyticsEvent.create({
+        eventType,
+        page,
+        element,
+        sessionId,
+        timestamp: new Date(),
+      });
+    } catch (err) {
+      // analytics write failed silently — non-critical
+      console.error('Analytics write failed:', err);
+    }
+    return NextResponse.json({ ok: true }, { status: 200 });
   } catch (error) {
     console.error('Failed to log analytics event:', error);
     return NextResponse.json({ error: 'Failed to log analytics event' }, { status: 500 });

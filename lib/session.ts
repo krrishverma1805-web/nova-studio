@@ -1,7 +1,19 @@
 import { verifyJWT, signJWT } from './auth';
+import { cookies } from 'next/headers';
 
 export async function createSession(username: string): Promise<string> {
-  return signJWT({ username });
+  const token = await signJWT({ username });
+  const isProd = process.env.NODE_ENV === 'production';
+  // When setting the cookie in the login route:
+  const cookieStore = await cookies();
+  cookieStore.set('nova-session', token, {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24, // 24 hours
+    path: '/',
+  });
+  return token;
 }
 
 export async function verifySession(token: string): Promise<any> {
