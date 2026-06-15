@@ -6,13 +6,11 @@ import {
   Container,
   Typography,
   TextField,
-  Button,
   Snackbar,
   Alert,
   CircularProgress,
 } from '@mui/material';
 import { motion } from 'framer-motion';
-import SendIcon from '@mui/icons-material/Send';
 import { z } from 'zod';
 import styles from './ContactForm.module.css';
 
@@ -42,10 +40,7 @@ const ContactForm = () => {
 
   const handleChange = (field: keyof ContactFormData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-    // Clear field error on edit
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,11 +66,9 @@ const ContactForm = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
       const data = await res.json();
-
       if (res.ok) {
-        setToast({ open: true, severity: 'success', message: 'Message sent successfully! We\'ll get back to you soon.' });
+        setToast({ open: true, severity: 'success', message: "Message sent successfully! We'll get back to you soon." });
         setFormData({ name: '', email: '', message: '' });
       } else {
         setToast({ open: true, severity: 'error', message: data.error || 'Something went wrong. Please try again.' });
@@ -91,25 +84,32 @@ const ContactForm = () => {
     <Box component="section" id="contact" className={styles.contactSection}>
       <Container maxWidth="xl">
         <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'secondary.main',
+          <span
+            style={{
+              fontSize: '0.75rem',
               fontWeight: 600,
-              letterSpacing: '0.08em',
+              letterSpacing: '0.12em',
               textTransform: 'uppercase',
-              mb: 1.5,
+              color: '#F97316',
+              display: 'block',
+              marginBottom: '0.75rem',
+              fontFamily: 'var(--font-inter), sans-serif',
             }}
           >
             Get in Touch
-          </Typography>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
+          </span>
+          <Typography variant="h2" sx={{ color: '#FFFFFF', fontSize: { xs: '2rem', md: '2.75rem' } }}>
             Start Your Project
           </Typography>
         </Box>
 
         <div className={styles.formWrapper}>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
+          >
             <TextField
               id="contact-name"
               label="Name"
@@ -144,19 +144,40 @@ const ContactForm = () => {
               rows={5}
             />
 
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <motion.button
                 id="contact-submit"
                 type="submit"
-                variant="contained"
-                size="large"
                 disabled={isSubmitting}
-                endIcon={isSubmitting ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
-                fullWidth
-                sx={{ py: 1.5 }}
+                whileHover={{ backgroundColor: isSubmitting ? '#F97316' : '#EA580C' }}
+                style={{
+                  width: '100%',
+                  height: 52,
+                  background: '#F97316',
+                  color: '#000000',
+                  border: 'none',
+                  borderRadius: 10,
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  fontFamily: 'var(--font-inter), sans-serif',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  opacity: isSubmitting ? 0.7 : 1,
+                  transition: 'opacity 0.2s ease',
+                }}
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </Button>
+                {isSubmitting ? (
+                  <>
+                    <CircularProgress size={18} sx={{ color: '#000' }} />
+                    Sending...
+                  </>
+                ) : (
+                  'Send Message'
+                )}
+              </motion.button>
             </motion.div>
           </Box>
         </div>
@@ -172,7 +193,11 @@ const ContactForm = () => {
           onClose={() => setToast((prev) => ({ ...prev, open: false }))}
           severity={toast.severity}
           variant="filled"
-          sx={{ width: '100%' }}
+          sx={{
+            width: '100%',
+            backgroundColor: toast.severity === 'success' ? '#22C55E' : '#EF4444',
+            color: '#FFFFFF',
+          }}
         >
           {toast.message}
         </Alert>

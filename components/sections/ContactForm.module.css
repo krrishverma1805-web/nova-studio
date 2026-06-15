@@ -1,17 +1,7 @@
 .contactSection {
-  padding: 6rem 1rem;
+  padding: 7rem 1rem;
   position: relative;
-}
-
-.contactSection::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.5), transparent);
+  background: transparent;
 }
 
 .formWrapper {

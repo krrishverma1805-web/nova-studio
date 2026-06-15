@@ -29,17 +29,25 @@ const StatCounter = ({ stat, inView }: { stat: StatData; inView: boolean }) => {
       <Typography
         variant="h2"
         sx={{
-          fontSize: { xs: '2.5rem', md: '3.5rem' },
+          fontSize: { xs: '2.75rem', md: '4rem' },
           fontWeight: 800,
-          background: 'linear-gradient(135deg, #F8FAFC 0%, #06B6D4 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          mb: 1,
+          color: '#F97316',
+          mb: 0.75,
+          lineHeight: 1,
+          letterSpacing: '-0.02em',
+          fontFamily: 'var(--font-inter), sans-serif',
         }}
       >
         {count}{suffix}
       </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 500 }}>
+      <Typography
+        sx={{
+          color: '#A3A3A3',
+          fontSize: '0.95rem',
+          fontWeight: 500,
+          fontFamily: 'var(--font-inter), sans-serif',
+        }}
+      >
         {stat.label}
       </Typography>
     </div>

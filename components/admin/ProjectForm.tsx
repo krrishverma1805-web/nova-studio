@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, TextField, Button, MenuItem, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, MenuItem } from '@mui/material';
 import { z } from 'zod';
 
 const projectSchema = z.object({
@@ -19,119 +19,181 @@ interface ProjectFormProps {
 
 const CATEGORIES = ['Web Design', 'Branding', 'Development'];
 
-const ProjectForm = ({ onSubmit, isLoading }: ProjectFormProps) => {
-  const [formData, setFormData] = useState<ProjectFormData>({
-    title: '',
-    category: '',
-    imageUrl: '',
-  });
+const inputSx = {
+  width: '100%',
+  padding: '11px 12px',
+  background: '#0A0A0A',
+  border: '1px solid rgba(255,255,255,0.08)',
+  borderRadius: '8px',
+  color: '#FFFFFF',
+  fontSize: '0.875rem',
+  fontFamily: 'var(--font-inter), sans-serif',
+  outline: 'none',
+  transition: 'border-color 0.2s ease',
+  boxSizing: 'border-box' as const,
+};
 
-  const [errors, setErrors] = useState<{ [key in keyof ProjectFormData]?: string }>({});
+const labelSx = {
+  fontSize: '0.78rem',
+  color: '#A3A3A3',
+  fontWeight: 500,
+  marginBottom: '6px',
+  display: 'block',
+  fontFamily: 'var(--font-inter), sans-serif',
+};
+
+const errSx = {
+  fontSize: '0.75rem',
+  color: '#EF4444',
+  marginTop: '4px',
+  fontFamily: 'var(--font-inter), sans-serif',
+};
+
+const ProjectForm = ({ onSubmit, isLoading }: ProjectFormProps) => {
+  const [formData, setFormData] = useState<ProjectFormData>({ title: '', category: '', imageUrl: '' });
+  const [errors, setErrors] = useState<{ [k in keyof ProjectFormData]?: string }>({});
+  const [focused, setFocused] = useState<string | null>(null);
 
   const handleChange = (field: keyof ProjectFormData) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }));
-    }
+    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const result = projectSchema.safeParse(formData);
     if (!result.success) {
-      const fieldErrors: { [key in keyof ProjectFormData]?: string } = {};
+      const fe: { [k in keyof ProjectFormData]?: string } = {};
       result.error.issues.forEach((err) => {
-        const field = err.path[0] as keyof ProjectFormData;
-        fieldErrors[field] = err.message;
+        const f = err.path[0] as keyof ProjectFormData;
+        fe[f] = err.message;
       });
-      setErrors(fieldErrors);
+      setErrors(fe);
       return;
     }
-
     setErrors({});
     try {
       await onSubmit(formData);
-      // Reset form on success
       setFormData({ title: '', category: '', imageUrl: '' });
-    } catch (error) {
-      console.error('Submit failed:', error);
+    } catch (err) {
+      console.error('Submit failed:', err);
     }
   };
 
+  const focusStyle = { borderColor: '#F97316', boxShadow: '0 0 0 3px rgba(249,115,22,0.08)' };
+
   return (
     <Box
-      component="form"
-      onSubmit={handleSubmit}
-      noValidate
       sx={{
         p: 3,
-        backgroundColor: '#1E293B',
-        borderRadius: 2,
-        border: '1px solid rgba(255, 255, 255, 0.05)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 3,
+        backgroundColor: 'rgba(17,17,17,0.9)',
+        border: '1px solid rgba(255,255,255,0.06)',
+        borderRadius: '14px',
       }}
     >
-      <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+      <Typography
+        sx={{
+          fontWeight: 600,
+          fontSize: '1rem',
+          color: '#FFFFFF',
+          mb: 2.5,
+          fontFamily: 'var(--font-inter), sans-serif',
+        }}
+      >
         Add New Project
       </Typography>
 
-      <TextField
-        id="project-title"
-        label="Project Title"
-        value={formData.title}
-        onChange={handleChange('title')}
-        error={!!errors.title}
-        helperText={errors.title}
-        fullWidth
-        required
-        size="small"
-      />
+      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {/* Title */}
+        <Box>
+          <label style={labelSx} htmlFor="project-title">Project Title</label>
+          <input
+            id="project-title"
+            type="text"
+            value={formData.title}
+            onChange={handleChange('title')}
+            onFocus={() => setFocused('title')}
+            onBlur={() => setFocused(null)}
+            placeholder="e.g. Brand Refresh for Acme"
+            style={{ ...inputSx, ...(focused === 'title' ? focusStyle : {}) }}
+          />
+          {errors.title && <p style={errSx}>{errors.title}</p>}
+        </Box>
 
-      <TextField
-        id="project-category"
-        select
-        label="Category"
-        value={formData.category}
-        onChange={handleChange('category')}
-        error={!!errors.category}
-        helperText={errors.category}
-        fullWidth
-        required
-        size="small"
-      >
-        {CATEGORIES.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
+        {/* Category */}
+        <Box>
+          <label style={labelSx} htmlFor="project-category">Category</label>
+          <select
+            id="project-category"
+            value={formData.category}
+            onChange={handleChange('category')}
+            onFocus={() => setFocused('category')}
+            onBlur={() => setFocused(null)}
+            style={{
+              ...inputSx,
+              ...(focused === 'category' ? focusStyle : {}),
+              cursor: 'pointer',
+            }}
+          >
+            <option value="" style={{ background: '#111' }}>Select a category...</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c} style={{ background: '#111' }}>{c}</option>
+            ))}
+          </select>
+          {errors.category && <p style={errSx}>{errors.category}</p>}
+        </Box>
 
-      <TextField
-        id="project-image-url"
-        label="Image URL"
-        value={formData.imageUrl}
-        onChange={handleChange('imageUrl')}
-        error={!!errors.imageUrl}
-        helperText={errors.imageUrl || 'Must be a valid absolute HTTP/HTTPS URL'}
-        fullWidth
-        required
-        size="small"
-      />
+        {/* Image URL */}
+        <Box>
+          <label style={labelSx} htmlFor="project-image-url">Image URL</label>
+          <input
+            id="project-image-url"
+            type="url"
+            value={formData.imageUrl}
+            onChange={handleChange('imageUrl')}
+            onFocus={() => setFocused('imageUrl')}
+            onBlur={() => setFocused(null)}
+            placeholder="https://..."
+            style={{ ...inputSx, ...(focused === 'imageUrl' ? focusStyle : {}) }}
+          />
+          {errors.imageUrl && <p style={errSx}>{errors.imageUrl}</p>}
+          {!errors.imageUrl && (
+            <p style={{ ...errSx, color: '#525252', marginTop: '4px' }}>Must be a valid absolute HTTPS URL</p>
+          )}
+        </Box>
 
-      <Button
-        id="project-submit"
-        type="submit"
-        variant="contained"
-        disabled={isLoading}
-        sx={{ py: 1.2, fontWeight: 600 }}
-      >
-        {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Create Project'}
-      </Button>
+        {/* Submit */}
+        <button
+          id="project-submit"
+          type="submit"
+          disabled={isLoading}
+          style={{
+            width: '100%',
+            height: 44,
+            background: isLoading ? '#EA580C' : '#F97316',
+            color: '#000000',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            fontFamily: 'var(--font-inter), sans-serif',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            marginTop: 4,
+            opacity: isLoading ? 0.8 : 1,
+            transition: 'background 0.2s ease',
+          }}
+          onMouseEnter={(e) => { if (!isLoading) (e.currentTarget as HTMLButtonElement).style.background = '#EA580C'; }}
+          onMouseLeave={(e) => { if (!isLoading) (e.currentTarget as HTMLButtonElement).style.background = '#F97316'; }}
+        >
+          {isLoading ? <CircularProgress size={18} sx={{ color: '#000' }} /> : 'Create Project'}
+        </button>
+      </Box>
     </Box>
   );
 };

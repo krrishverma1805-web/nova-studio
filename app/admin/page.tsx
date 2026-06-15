@@ -1,4 +1,4 @@
-import { Box, Grid, Card, CardContent, Typography, Alert } from '@mui/material';
+import { Box, Grid, Typography, Alert } from '@mui/material';
 import prisma from '@/lib/prisma';
 import connectMongoDB from '@/lib/mongodb';
 import AnalyticsEvent from '@/models/AnalyticsEvent';
@@ -8,7 +8,32 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import TouchAppIcon from '@mui/icons-material/TouchApp';
 
-export const revalidate = 0; // Disable server caching for admin page
+export const revalidate = 0;
+
+const cardSx = {
+  p: 3,
+  height: '100%',
+  backgroundColor: 'rgba(17,17,17,0.9)',
+  border: '1px solid rgba(255,255,255,0.06)',
+  borderRadius: '14px',
+  transition: 'border-color 0.2s ease, background-color 0.2s ease',
+  '&:hover': {
+    borderColor: 'rgba(249,115,22,0.25)',
+    backgroundColor: '#161616',
+  },
+};
+
+const iconWrapSx = {
+  width: 44,
+  height: 44,
+  borderRadius: '10px',
+  background: 'rgba(249,115,22,0.1)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  mb: 2,
+  color: '#F97316',
+};
 
 export default async function AdminDashboard() {
   let totalProjects = 0;
@@ -39,31 +64,31 @@ export default async function AdminDashboard() {
     {
       title: 'Total Projects',
       value: totalProjects,
-      icon: <WorkIcon sx={{ fontSize: 36, color: 'primary.light' }} />,
+      icon: <WorkIcon sx={{ fontSize: 22, color: '#F97316' }} />,
       description: 'Active case studies on portfolio',
     },
     {
       title: 'Contact Submissions',
       value: totalContacts,
-      icon: <EmailIcon sx={{ fontSize: 36, color: 'secondary.light' }} />,
+      icon: <EmailIcon sx={{ fontSize: 22, color: '#F97316' }} />,
       description: 'Messages received from leads',
     },
     {
       title: 'Total Tracked Events',
       value: mongoConnected ? totalEvents : 'N/A',
-      icon: <BarChartIcon sx={{ fontSize: 36, color: 'success.main' }} />,
+      icon: <BarChartIcon sx={{ fontSize: 22, color: '#F97316' }} />,
       description: 'Interactions stored in MongoDB',
     },
     {
       title: 'Homepage Visits',
       value: mongoConnected ? pageVisits : 'N/A',
-      icon: <VisibilityIcon sx={{ fontSize: 36, color: 'info.main' }} />,
+      icon: <VisibilityIcon sx={{ fontSize: 22, color: '#F97316' }} />,
       description: 'Total user impressions logged',
     },
     {
       title: 'CTA Button Clicks',
       value: mongoConnected ? ctaClicks : 'N/A',
-      icon: <TouchAppIcon sx={{ fontSize: 36, color: 'warning.main' }} />,
+      icon: <TouchAppIcon sx={{ fontSize: 22, color: '#F97316' }} />,
       description: 'Clicks on "Start a Project"',
     },
   ];
@@ -71,61 +96,75 @@ export default async function AdminDashboard() {
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+        <Typography
+          sx={{
+            fontWeight: 700,
+            fontSize: '1.5rem',
+            color: '#FFFFFF',
+            mb: 0.5,
+            fontFamily: 'var(--font-inter), sans-serif',
+          }}
+        >
           Dashboard
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography sx={{ fontSize: '0.875rem', color: '#525252', fontFamily: 'var(--font-inter), sans-serif' }}>
           Overview of Nova Studio performance and activity logs.
         </Typography>
       </Box>
 
       {!mongoConnected && (
-        <Alert severity="warning" sx={{ mb: 4 }}>
+        <Alert
+          severity="warning"
+          sx={{
+            mb: 4,
+            backgroundColor: 'rgba(249,115,22,0.08)',
+            color: '#F97316',
+            border: '1px solid rgba(249,115,22,0.2)',
+            '& .MuiAlert-icon': { color: '#F97316' },
+          }}
+        >
           Could not connect to MongoDB. Analytics data is temporarily unavailable. Make sure MongoDB is running.
         </Alert>
       )}
 
-      <Grid container spacing={3}>
-        {stats.map((stat, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card
-              sx={{
-                p: 1,
-                height: '100%',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 12px 24px rgba(0,0,0,0.2)',
-                },
-              }}
-            >
-              <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                  <Box>
-                    <Typography variant="subtitle2" color="text.secondary" sx={{ fontWeight: 600 }}>
-                      {stat.title}
-                    </Typography>
-                    <Typography variant="h3" sx={{ fontWeight: 800, mt: 0.5 }}>
-                      {stat.value}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      p: 1.5,
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {stat.icon}
-                  </Box>
-                </Box>
-                <Typography variant="caption" color="text.secondary">
-                  {stat.description}
-                </Typography>
-              </CardContent>
-            </Card>
+      <Grid container spacing={2.5}>
+        {stats.map((stat, i) => (
+          <Grid item xs={12} sm={6} md={4} key={i}>
+            <Box sx={cardSx}>
+              <Box sx={iconWrapSx}>{stat.icon}</Box>
+              <Typography
+                sx={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#FFFFFF',
+                  mb: 0.5,
+                  fontFamily: 'var(--font-inter), sans-serif',
+                }}
+              >
+                {stat.title}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: '2rem',
+                  fontWeight: 700,
+                  color: '#FFFFFF',
+                  lineHeight: 1.1,
+                  mb: 0.75,
+                  fontFamily: 'var(--font-inter), sans-serif',
+                }}
+              >
+                {stat.value}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: '0.78rem',
+                  color: '#525252',
+                  fontFamily: 'var(--font-inter), sans-serif',
+                }}
+              >
+                {stat.description}
+              </Typography>
+            </Box>
           </Grid>
         ))}
       </Grid>

@@ -8,19 +8,16 @@ import XIcon from '@mui/icons-material/X';
 
 const Footer = () => {
   const pathname = usePathname();
+  if (pathname.startsWith('/admin')) return null;
 
-  if (pathname.startsWith('/admin')) {
-    return null;
-  }
   return (
     <Box
       component="footer"
       id="footer"
       sx={{
         py: 6,
-        borderTop: '1px solid',
-        borderColor: 'divider',
-        background: 'linear-gradient(180deg, rgba(15,23,42,0) 0%, rgba(15,23,42,1) 100%)',
+        backgroundColor: '#0A0A0A',
+        borderTop: '1px solid rgba(255, 255, 255, 0.06)',
       }}
     >
       <Container maxWidth="xl">
@@ -31,25 +28,41 @@ const Footer = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: 3,
+            mb: 4,
           }}
         >
+          {/* Brand */}
           <Box sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
-              Nova Studio
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, justifyContent: { xs: 'center', md: 'flex-start' }, mb: 0.75 }}>
+              <Box
+                sx={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: '50%',
+                  background: '#F97316',
+                  boxShadow: '0 0 6px rgba(249,115,22,0.6)',
+                }}
+              />
+              <Typography
+                sx={{ fontWeight: 700, fontSize: '1.1rem', color: '#FFFFFF', fontFamily: 'var(--font-inter), sans-serif' }}
+              >
+                Nova Studio
+              </Typography>
+            </Box>
+            <Typography sx={{ color: '#525252', fontSize: '0.875rem', fontFamily: 'var(--font-inter), sans-serif' }}>
               Crafting digital experiences that leave a lasting impression.
             </Typography>
           </Box>
 
-          <Stack direction="row" spacing={1}>
+          {/* Social icons */}
+          <Stack direction="row" spacing={0.5}>
             <IconButton
               id="footer-github"
               href="https://github.com"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"
-              sx={{ color: 'text.secondary', '&:hover': { color: 'secondary.main' } }}
+              sx={{ color: '#A3A3A3', '&:hover': { color: '#F97316' }, transition: 'color 0.2s ease' }}
             >
               <GitHubIcon />
             </IconButton>
@@ -59,7 +72,7 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="X (Twitter)"
-              sx={{ color: 'text.secondary', '&:hover': { color: 'secondary.main' } }}
+              sx={{ color: '#A3A3A3', '&:hover': { color: '#F97316' }, transition: 'color 0.2s ease' }}
             >
               <XIcon />
             </IconButton>
@@ -69,17 +82,23 @@ const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              sx={{ color: 'text.secondary', '&:hover': { color: 'secondary.main' } }}
+              sx={{ color: '#A3A3A3', '&:hover': { color: '#F97316' }, transition: 'color 0.2s ease' }}
             >
               <LinkedInIcon />
             </IconButton>
           </Stack>
         </Box>
 
+        {/* Copyright */}
         <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ textAlign: 'center', mt: 4, pt: 3, borderTop: '1px solid', borderColor: 'divider' }}
+          sx={{
+            textAlign: 'center',
+            color: '#525252',
+            fontSize: '0.8rem',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
+            pt: 3,
+            fontFamily: 'var(--font-inter), sans-serif',
+          }}
         >
           © {new Date().getFullYear()} Nova Studio. All rights reserved.
         </Typography>

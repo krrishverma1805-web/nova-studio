@@ -6,44 +6,44 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#4F46E5',
-      dark: '#3730A3',
-      light: '#818CF8',
+      main: '#F97316',
+      dark: '#EA580C',
+      light: '#FB923C',
     },
     secondary: {
-      main: '#06B6D4',
-      dark: '#0891B2',
-      light: '#22D3EE',
+      main: '#F97316',
+      dark: '#EA580C',
+      light: '#FB923C',
     },
     background: {
-      default: '#0F172A',
-      paper: '#1E293B',
+      default: '#0A0A0A',
+      paper: '#111111',
     },
     text: {
-      primary: '#F8FAFC',
-      secondary: '#94A3B8',
+      primary: '#FFFFFF',
+      secondary: '#A3A3A3',
     },
     success: {
-      main: '#10B981',
+      main: '#22C55E',
     },
     error: {
       main: '#EF4444',
     },
-    divider: 'rgba(148, 163, 184, 0.12)',
+    divider: 'rgba(255, 255, 255, 0.06)',
   },
   typography: {
     fontFamily: 'var(--font-inter), sans-serif',
     h1: {
-      fontSize: '3.5rem',
-      fontWeight: 700,
-      lineHeight: 1.1,
-      letterSpacing: '-0.02em',
+      fontSize: 'clamp(3rem, 7vw, 5.5rem)',
+      fontWeight: 800,
+      lineHeight: 1.05,
+      letterSpacing: '-0.03em',
     },
     h2: {
-      fontSize: '2.5rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-      letterSpacing: '-0.01em',
+      fontSize: 'clamp(2rem, 4vw, 3rem)',
+      fontWeight: 800,
+      lineHeight: 1.15,
+      letterSpacing: '-0.02em',
     },
     h3: {
       fontSize: '1.5rem',
@@ -57,6 +57,7 @@ const theme = createTheme({
     body1: {
       fontSize: '1rem',
       lineHeight: 1.7,
+      color: '#A3A3A3',
     },
     body2: {
       fontSize: '0.875rem',
@@ -88,11 +89,12 @@ const theme = createTheme({
           fontSize: '0.95rem',
         },
         containedPrimary: {
-          background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
-          boxShadow: '0 4px 14px 0 rgba(79, 70, 229, 0.4)',
+          background: '#F97316',
+          color: '#000000',
+          boxShadow: 'none',
           '&:hover': {
-            background: 'linear-gradient(135deg, #4338CA 0%, #6D28D9 100%)',
-            boxShadow: '0 6px 20px 0 rgba(79, 70, 229, 0.5)',
+            background: '#EA580C',
+            boxShadow: '0 4px 20px rgba(249, 115, 22, 0.3)',
           },
         },
       },
@@ -101,17 +103,19 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          backgroundColor: '#1E293B',
-          border: '1px solid rgba(148, 163, 184, 0.15)',
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          backgroundColor: 'rgba(17, 17, 17, 0.8)',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
         },
       },
     },
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#0F172A',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.12)',
+          backgroundColor: 'rgba(10, 10, 10, 0.8)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
           boxShadow: 'none',
         },
       },
@@ -120,12 +124,28 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
+            backgroundColor: 'rgba(17, 17, 17, 0.8)',
+            borderRadius: 10,
+            color: '#FFFFFF',
             '& fieldset': {
-              borderColor: 'rgba(148, 163, 184, 0.2)',
+              borderColor: 'rgba(255, 255, 255, 0.08)',
             },
             '&:hover fieldset': {
-              borderColor: 'rgba(148, 163, 184, 0.4)',
+              borderColor: 'rgba(255, 255, 255, 0.15)',
             },
+            '&.Mui-focused fieldset': {
+              borderColor: '#F97316',
+              boxShadow: '0 0 0 3px rgba(249, 115, 22, 0.1)',
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#525252',
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#F97316',
+          },
+          '& .MuiOutlinedInput-input::placeholder': {
+            color: '#525252',
           },
         },
       },
@@ -133,8 +153,8 @@ const theme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#1E293B',
-          borderRight: '1px solid rgba(148, 163, 184, 0.08)',
+          backgroundColor: '#0A0A0A',
+          borderRight: '1px solid rgba(255, 255, 255, 0.06)',
         },
       },
     },

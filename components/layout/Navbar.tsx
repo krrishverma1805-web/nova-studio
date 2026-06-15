@@ -5,8 +5,6 @@ import { usePathname } from 'next/navigation';
 import {
   AppBar,
   Toolbar,
-  Typography,
-  Button,
   IconButton,
   Drawer,
   List,
@@ -20,7 +18,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import { motion } from 'framer-motion';
 
 const NAV_LINKS = [
   { label: 'Services', href: '#services' },
@@ -39,52 +37,55 @@ const Navbar = () => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
-
-  if (pathname.startsWith('/admin')) {
-    return null;
-  }
+  if (!mounted) return null;
+  if (pathname.startsWith('/admin')) return null;
 
   const handleNavClick = (href: string) => {
     setDrawerOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <AppBar position="sticky" id="navbar">
+    <AppBar position="sticky" id="navbar" elevation={0}>
       <Container maxWidth="xl">
         <Toolbar sx={{ justifyContent: 'space-between', px: 0, minHeight: { xs: 64, md: 72 } }}>
+          {/* Logo */}
           <Box
             sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer' }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <RocketLaunchIcon sx={{ color: 'secondary.main', fontSize: 28 }} />
-            <Typography
-              variant="h6"
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                background: '#F97316',
+                boxShadow: '0 0 8px rgba(249,115,22,0.7)',
+                flexShrink: 0,
+              }}
+            />
+            <Box
+              component="span"
               sx={{
                 fontWeight: 700,
-                background: 'linear-gradient(135deg, #F8FAFC 0%, #06B6D4 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                fontSize: '1.15rem',
+                color: '#FFFFFF',
+                fontFamily: 'var(--font-inter), sans-serif',
                 letterSpacing: '-0.01em',
               }}
             >
               Nova Studio
-            </Typography>
+            </Box>
           </Box>
 
           {isMobile ? (
             <>
               <IconButton
                 id="nav-menu-toggle"
-                color="inherit"
                 onClick={() => setDrawerOpen(true)}
                 aria-label="Open navigation menu"
+                sx={{ color: '#FFFFFF' }}
               >
                 <MenuIcon />
               </IconButton>
@@ -92,12 +93,14 @@ const Navbar = () => {
                 anchor="right"
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
-                PaperProps={{
-                  sx: { width: 280, pt: 2 },
-                }}
+                PaperProps={{ sx: { width: 280, pt: 2, backgroundColor: '#0A0A0A', borderLeft: '1px solid rgba(255,255,255,0.06)' } }}
               >
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 2, mb: 2 }}>
-                  <IconButton onClick={() => setDrawerOpen(false)} aria-label="Close menu">
+                  <IconButton
+                    onClick={() => setDrawerOpen(false)}
+                    aria-label="Close menu"
+                    sx={{ color: '#FFFFFF' }}
+                  >
                     <CloseIcon />
                   </IconButton>
                 </Box>
@@ -107,36 +110,84 @@ const Navbar = () => {
                       <ListItemButton onClick={() => handleNavClick(link.href)}>
                         <ListItemText
                           primary={link.label}
-                          primaryTypographyProps={{
-                            fontSize: '1.1rem',
-                            fontWeight: 500,
-                          }}
+                          primaryTypographyProps={{ fontSize: '1.1rem', fontWeight: 500, color: '#FFFFFF' }}
                         />
                       </ListItemButton>
                     </ListItem>
                   ))}
+                  <ListItem disablePadding sx={{ mt: 2, px: 2 }}>
+                    <Box
+                      onClick={() => handleNavClick('#contact')}
+                      sx={{
+                        width: '100%',
+                        py: 1.25,
+                        px: 3,
+                        background: '#F97316',
+                        borderRadius: '999px',
+                        color: '#000000',
+                        fontWeight: 600,
+                        fontSize: '0.95rem',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        fontFamily: 'var(--font-inter), sans-serif',
+                      }}
+                    >
+                      Start a Project
+                    </Box>
+                  </ListItem>
                 </List>
               </Drawer>
             </>
           ) : (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {NAV_LINKS.map((link) => (
-                <Button
+                <Box
                   key={link.label}
                   id={`nav-link-${link.label.toLowerCase()}`}
+                  component="button"
                   onClick={() => handleNavClick(link.href)}
                   sx={{
-                    color: 'text.secondary',
+                    background: 'none',
+                    border: 'none',
+                    color: '#A3A3A3',
                     fontWeight: 500,
-                    '&:hover': {
-                      color: 'text.primary',
-                      backgroundColor: 'rgba(148, 163, 184, 0.08)',
-                    },
+                    fontSize: '0.95rem',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                    cursor: 'pointer',
+                    px: 1.5,
+                    py: 0.75,
+                    borderRadius: '6px',
+                    transition: 'color 0.2s ease',
+                    '&:hover': { color: '#F97316' },
                   }}
                 >
                   {link.label}
-                </Button>
+                </Box>
               ))}
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Box
+                  id="nav-cta"
+                  component="button"
+                  onClick={() => handleNavClick('#contact')}
+                  sx={{
+                    background: '#F97316',
+                    border: 'none',
+                    color: '#000000',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    fontFamily: 'var(--font-inter), sans-serif',
+                    cursor: 'pointer',
+                    px: 2.5,
+                    py: 1,
+                    borderRadius: '999px',
+                    ml: 1,
+                    transition: 'background 0.2s ease',
+                    '&:hover': { background: '#EA580C' },
+                  }}
+                >
+                  Start a Project
+                </Box>
+              </motion.div>
             </Box>
           )}
         </Toolbar>

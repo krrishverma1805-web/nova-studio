@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Grid, Card, CardContent } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import CodeIcon from '@mui/icons-material/Code';
 import BrushIcon from '@mui/icons-material/Brush';
@@ -7,9 +7,9 @@ import ServicesClient from './ServicesClient';
 import styles from './Services.module.css';
 
 const iconMap: Record<string, React.ReactNode> = {
-  DesignServices: <DesignServicesIcon sx={{ fontSize: 40 }} />,
-  Code: <CodeIcon sx={{ fontSize: 40 }} />,
-  Brush: <BrushIcon sx={{ fontSize: 40 }} />,
+  DesignServices: <DesignServicesIcon sx={{ fontSize: 32 }} />,
+  Code: <CodeIcon sx={{ fontSize: 32 }} />,
+  Brush: <BrushIcon sx={{ fontSize: 32 }} />,
 };
 
 const Services = async () => {
@@ -19,19 +19,11 @@ const Services = async () => {
     <Box component="section" id="services" className={styles.servicesSection}>
       <Container maxWidth="xl">
         <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <span className={styles.sectionLabel}>What We Do</span>
           <Typography
-            variant="body2"
-            sx={{
-              color: 'secondary.main',
-              fontWeight: 600,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              mb: 1.5,
-            }}
+            variant="h2"
+            sx={{ color: '#FFFFFF', fontSize: { xs: '2rem', md: '2.75rem' } }}
           >
-            What We Do
-          </Typography>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
             Our Services
           </Typography>
         </Box>

@@ -1,15 +1,15 @@
 .servicesSection {
-  padding: 6rem 1rem;
+  padding: 7rem 1rem;
   position: relative;
+  background: transparent;
 }
 
-.servicesSection::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.5), transparent);
+.sectionLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F97316;
+  display: block;
+  margin-bottom: 0.75rem;
 }

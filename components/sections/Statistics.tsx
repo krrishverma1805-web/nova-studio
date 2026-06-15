@@ -10,19 +10,21 @@ const Statistics = async () => {
     <Box component="section" id="statistics" className={styles.statsSection}>
       <Container maxWidth="xl">
         <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'secondary.main',
+          <span
+            style={{
+              fontSize: '0.75rem',
               fontWeight: 600,
-              letterSpacing: '0.08em',
-              textTransform: 'uppercase',
-              mb: 1.5,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase' as const,
+              color: '#F97316',
+              display: 'block',
+              marginBottom: '0.75rem',
+              fontFamily: 'var(--font-inter), sans-serif',
             }}
           >
             By the Numbers
-          </Typography>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' } }}>
+          </span>
+          <Typography variant="h2" sx={{ color: '#FFFFFF', fontSize: { xs: '2rem', md: '2.75rem' } }}>
             Our Track Record
           </Typography>
         </Box>

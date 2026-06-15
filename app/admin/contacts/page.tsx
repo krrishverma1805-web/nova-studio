@@ -21,10 +21,18 @@ export default async function ContactsAdminPage() {
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
+        <Typography
+          sx={{
+            fontWeight: 700,
+            fontSize: '1.5rem',
+            color: '#FFFFFF',
+            mb: 0.5,
+            fontFamily: 'var(--font-inter), sans-serif',
+          }}
+        >
           Contact Submissions
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography sx={{ fontSize: '0.875rem', color: '#525252', fontFamily: 'var(--font-inter), sans-serif' }}>
           Review messages and requests sent by clients from the public contact form.
         </Typography>
       </Box>
