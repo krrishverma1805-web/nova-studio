@@ -88,8 +88,7 @@ const LoginPage = () => {
       if (!res.ok) {
         setLoginError('Invalid username or password');
       } else {
-        router.push('/admin');
-        router.refresh();
+        window.location.href = '/admin';
       }
     } catch {
       setLoginError('An unexpected error occurred. Please try again.');
