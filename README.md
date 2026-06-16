@@ -6,8 +6,8 @@ Fullstack web application for a premium digital agency called **Nova Studio**. I
 
 ## Live Demo
 A live deployment of the application can be accessed here:
-- **Production Site**: [https://nova-studio-demo.vercel.app](https://nova-studio-demo.vercel.app) *(Placeholder)*
-- **Admin Portal**: [https://nova-studio-demo.vercel.app/admin](https://nova-studio-demo.vercel.app/admin) *(Placeholder)*
+- **Production Site**: [https://nova-studio-8qr9.vercel.app](https://nova-studio-8qr9.vercel.app)
+- **Admin Portal**: [https://nova-studio-8qr9.vercel.app/admin](https://nova-studio-8qr9.vercel.app/admin)
 
 ---
 
@@ -107,13 +107,15 @@ This command builds the optimized multi-stage `Dockerfile`, starts all three ser
 
 ---
 
-## Design Decisions
+## Design & Security Decisions
 1. **Flat UI Cards**: To maximize visual performance and avoid Lighthouse paint delays, cards are rendered with a flat design, explicit border bounds (`1px solid`), and clean MUI shadows rather than performance-heavy backdrop blur CSS.
 2. **Force-Dynamic Rendering**: The public homepage and API routes are configured for dynamic runtime loading (`force-dynamic`) to avoid database network dependency validation during static build steps.
 3. **Dual Databases**: PostgreSQL handles transactional, highly relational schemas (contacts and projects) while MongoDB houses high-volume user interactions (impressions and analytics).
+4. **Hardened Security & Stability**: HTTP headers have been hardened (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, etc.), secure `httpOnly` flags are enforced on sessions, Zod schemas validate field length limits, and API endpoints drop payloads over 10KB to prevent request bloating.
+5. **Fail-safe Analytics Logging**: Writes to high-volume secondary tables (like MongoDB events) are wrapped in fail-safe try-catch blocks to prevent database connection dropouts from breaking transactional contact submissions.
 
 ---
 
 ## Known Limitations
 - **In-Memory Rate Limiter**: The rate-limiter is stored in-memory. Under serverless cold starts or multi-instance load balancers, client buckets will reset. In production, this should be swapped for a Redis-backed token bucket (e.g. Upstash).
-- **Vercel Database Config**: When deploying to Vercel, external database instances (e.g. Neon for Postgres, MongoDB Atlas for Mongo) must be separately provisioned and linked via environment variables.
+- **Vercel Database Config**: When deploying to Vercel, external database instances (e.g. Neon for Postgres, MongoDB Atlas for Mongo) must be separately provisioned and linked via environment variables. The build script is pre-configured with `prisma generate` to compile the schema dependencies cleanly during Vercel's build step.
